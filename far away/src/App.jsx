@@ -1,11 +1,21 @@
 import { useState } from "react";
 
 function App() {
+  const [items, setItems] = useState([]);
+
+  function handleAddItem(newItem) {
+    setItems((items) => [...items, newItem]);
+  }
+
+  function handleDelete(id) {
+    setItems((items) => items.filter((item) => item.id !== id));
+  }
+
   return (
     <div className="app">
       <Logo />
-      <Form />
-      <PackingList />
+      <Form handleAddItem={handleAddItem} />
+      <PackingList items={items} handleDelete={handleDelete} />
       <Stats />
     </div>
   );
@@ -15,19 +25,18 @@ function Logo() {
   return <h1>🏝️ Far Away 🧳</h1>;
 }
 
-function Form() {
+function Form({ handleAddItem }) {
   const [quantity, setQuantity] = useState(1);
   const [description, setDescription] = useState("");
-  const [items, setItems] = useState([]);
 
   // console.log(items);
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    const newItem = { quantity, description };
+    const newItem = { quantity, description, isPacked: false, id: Date.now() };
 
-    setItems((items) => [...items, newItem]);
+    handleAddItem(newItem);
   }
 
   function handleDescription(e) {
@@ -61,17 +70,28 @@ function Form() {
   );
 }
 
-function PackingList() {
+function PackingList({ items, handleDelete }) {
   return (
     <div className="list">
       <ul>
-        <li>
-          <input type="checkbox" />
-          <span>1 Socks</span>
-          <button>❌</button>
-        </li>
+        {items.map((item, index) => (
+          <Item key={index} item={item} handleDelete={handleDelete} />
+        ))}
       </ul>
     </div>
+  );
+}
+
+function Item({ item, handleDelete }) {
+  const { quantity, description, id } = item;
+  return (
+    <li>
+      <input type="checkbox" />
+      <span>
+        {quantity} {description}
+      </span>
+      <button onClick={() => handleDelete(id)}>❌</button>
+    </li>
   );
 }
 
