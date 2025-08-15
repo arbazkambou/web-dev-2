@@ -3,6 +3,8 @@ import { useState } from "react";
 function App() {
   const [items, setItems] = useState([]);
 
+  console.log("items", items);
+
   function handleAddItem(newItem) {
     setItems((items) => [...items, newItem]);
   }
@@ -11,12 +13,24 @@ function App() {
     setItems((items) => items.filter((item) => item.id !== id));
   }
 
+  function handleStatus(id) {
+    setItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, isPacked: !item.isPacked } : item
+      )
+    );
+  }
+
   return (
     <div className="app">
       <Logo />
       <Form handleAddItem={handleAddItem} />
-      <PackingList items={items} handleDelete={handleDelete} />
-      <Stats />
+      <PackingList
+        items={items}
+        handleDelete={handleDelete}
+        handleStatus={handleStatus}
+      />
+      <Stats items={items} />
     </div>
   );
 }
@@ -70,24 +84,33 @@ function Form({ handleAddItem }) {
   );
 }
 
-function PackingList({ items, handleDelete }) {
+function PackingList({ items, handleDelete, handleStatus }) {
   return (
     <div className="list">
       <ul>
         {items.map((item, index) => (
-          <Item key={index} item={item} handleDelete={handleDelete} />
+          <Item
+            key={index}
+            item={item}
+            handleDelete={handleDelete}
+            handleStatus={handleStatus}
+          />
         ))}
       </ul>
     </div>
   );
 }
 
-function Item({ item, handleDelete }) {
-  const { quantity, description, id } = item;
+function Item({ item, handleDelete, handleStatus }) {
+  const { quantity, description, id, isPacked } = item;
   return (
     <li>
-      <input type="checkbox" />
-      <span>
+      <input
+        type="checkbox"
+        onChange={() => handleStatus(id)}
+        checked={isPacked}
+      />
+      <span style={{ textDecoration: isPacked ? "line-through" : "none" }}>
         {quantity} {description}
       </span>
       <button onClick={() => handleDelete(id)}>❌</button>
@@ -95,12 +118,22 @@ function Item({ item, handleDelete }) {
   );
 }
 
-function Stats() {
+function Stats({ items }) {
+  const numOfItems = items.length;
+  const numOfPackedItems = items.filter(
+    (item) => item.isPacked === true
+  ).length;
+
+  const percentage = Math.round((numOfPackedItems / numOfItems) * 100);
+
   return (
     <footer className="stats">
       <em>
-        💼 You have $NumOfItems items on your list, and you already packed $
-        $NumOfItemsPacked $percentage
+        {percentage === 100 && "You have everything to go"}
+        {numOfItems === 0 && "Please start adding items in your list"}
+        {numOfItems > 0 &&
+          `💼 You have ${numOfItems} items on your list, and you already packed
+        ${numOfPackedItems} (${percentage}%)`}
       </em>
     </footer>
   );
