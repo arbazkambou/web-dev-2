@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Button from "./components/Button";
 
 const messages = [
   "Learn React ⚛️",
@@ -39,6 +40,10 @@ export default function App() {
         <button onClick={handlePrev}>Previous</button>
         <button onClick={handleNext}>Next</button>
       </div>
+      <Button color={"green"} fontColor={"white"}>
+        <div>Khalid</div>
+      </Button>
+      {/* <Button text={"Fasieh"} /> */}
     </div>
   );
 }
