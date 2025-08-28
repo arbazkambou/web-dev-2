@@ -7,40 +7,62 @@ import SearchResult from "./components/SearchResult";
 import WatchedMovies from "./components/WatchedMovies";
 import WatchedSummary from "./components/WatchedSummary";
 import { tempWatchedData } from "./data/sampleData";
-
-const API = "http://www.omdbapi.com/?apikey=210ec08b&s=inception";
+import Search from "./components/Search";
 
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState(tempWatchedData);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState("");
+  const [query, setQuery] = useState("");
 
-  useEffect(function () {
-    async function fetchMovies() {
-      try {
-        setIsLoading(true);
-        const response = await fetch(API);
+  useEffect(
+    function () {
+      async function fetchMovies() {
+        try {
+          setIsError("");
+          setIsLoading(true);
+          const response = await fetch(
+            `http://www.omdbapi.com/?apikey=210ec08b&s=${query}`
+          );
 
-        if (!response.ok) {
-          throw new Error(`HTPP Error:${response.status}`);
+          if (!response.ok) {
+            throw new Error(`HTPP Error:${response.status}`);
+          }
+          const data = await response.json();
+
+          if (data.Response === "False") {
+            throw new Error("Movie not found");
+          }
+
+          setMovies(data.Search);
+          setIsLoading(false);
+        } catch (error) {
+          setIsError(error.message);
+        } finally {
+          setIsLoading(false);
         }
-        const data = await response.json();
-
-        if (data.Response === "False") {
-          throw new Error("Movie not found");
-        }
-
-        setMovies(data.Search);
-        setIsLoading(false);
-      } catch (error) {
-        setIsError(error.message);
-      } finally {
-        setIsLoading(false);
       }
-    }
 
-    fetchMovies();
+      if (query.length > 3) {
+        fetchMovies();
+      } else {
+        setIsError("Please search something 🙂");
+      }
+    },
+    [query]
+  );
+
+  useEffect(() => {
+    console.log("Every rerender");
+  });
+
+  useEffect(() => {
+    console.log("When query change");
+  }, [query]);
+
+  useEffect(() => {
+    console.log("Initial render");
   }, []);
 
   // initial render
@@ -53,6 +75,7 @@ export default function App() {
   return (
     <>
       <Navbar>
+        <Search query={query} setQuery={setQuery} />
         <SearchResult movies={movies} />
       </Navbar>
 
