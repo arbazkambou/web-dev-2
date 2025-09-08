@@ -33,7 +33,7 @@ function MovieDetail({
         }
 
         const data = await response.json();
-
+        document.title = data.Title;
         setMovieDetail(data);
         setIsLoading(false);
       } catch (error) {
@@ -44,7 +44,25 @@ function MovieDetail({
     }
 
     getMovieDetail();
-  }, [selectedMoviedID]);
+
+    return () => {
+      document.title = "usePocorn";
+    };
+  }, [selectedMoviedID, movieDetail.Title]);
+
+  useEffect(() => {
+    const callback = function (e) {
+      if (e.code === "Escape") {
+        handleSelectedMovie(null);
+      }
+    };
+
+    document.addEventListener("keydown", callback);
+
+    return () => {
+      document.removeEventListener("keydown", callback);
+    };
+  }, [handleSelectedMovie]);
 
   if (isLoading) return <div className="loader">Loading...</div>;
 

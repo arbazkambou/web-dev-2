@@ -1,18 +1,24 @@
 import { useEffect, useState } from "react";
 import Box from "./components/Box";
 import Main from "./components/Main";
+import MovieDetail from "./components/MovieDetail";
 import MoviesList from "./components/MoviesList";
 import Navbar from "./components/Navbar";
+import Search from "./components/Search";
 import SearchResult from "./components/SearchResult";
 import WatchedMovies from "./components/WatchedMovies";
 import WatchedSummary from "./components/WatchedSummary";
-import { tempWatchedData } from "./data/sampleData";
-import Search from "./components/Search";
-import MovieDetail from "./components/MovieDetail";
 
 export default function App() {
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
+  const [watched, setWatched] = useState(function () {
+    const data = localStorage.getItem("watched");
+    if (data) {
+      return JSON.parse(data);
+    } else {
+      return [];
+    }
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState("");
   const [query, setQuery] = useState("");
@@ -36,12 +42,16 @@ export default function App() {
 
   useEffect(
     function () {
+      const controller = new AbortController();
       async function fetchMovies() {
         try {
           setIsError("");
           setIsLoading(true);
           const response = await fetch(
-            `http://www.omdbapi.com/?apikey=210ec08b&s=${query}`
+            `http://www.omdbapi.com/?apikey=210ec08b&s=${query}`,
+            {
+              signal: controller.signal,
+            }
           );
 
           if (!response.ok) {
@@ -56,6 +66,7 @@ export default function App() {
           setMovies(data.Search);
           setIsLoading(false);
         } catch (error) {
+          if (error.name === "AbortError") return;
           setIsError(error.message);
         } finally {
           setIsLoading(false);
@@ -67,9 +78,18 @@ export default function App() {
       } else {
         setIsError("Please search something 🙂");
       }
+
+      return () => {
+        controller.abort();
+      };
     },
+
     [query]
   );
+
+  useEffect(() => {
+    localStorage.setItem("watched", JSON.stringify(watched));
+  }, [watched]);
 
   // useEffect(() => {
   //   console.log("Every rerender");
