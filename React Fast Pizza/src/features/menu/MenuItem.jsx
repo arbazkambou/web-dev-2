@@ -1,9 +1,32 @@
+import { useDispatch, useSelector } from "react-redux";
+import { addItem } from "../../redux/slices/cartSlice";
 import Button from "../../ui/Button";
-import DeleteItemButton from "../cart/DeleteItemButton";
 import IncDecButtons from "../cart/IncDecButtons";
+import DeleteItemButton from "../cart/DeleteItemButton";
 
 function MenuItem({ pizza }) {
-  const { imageUrl, ingredients, name, soldOut, unitPrice } = pizza;
+  const { id, imageUrl, ingredients, name, soldOut, unitPrice } = pizza;
+  const cartState = useSelector((store) => store.cart);
+
+  const isInCart = cartState.cart.some((item) => item.id === id);
+
+  const dispatch = useDispatch();
+
+  function handleAddItem() {
+    const newPizzaItem = {
+      id,
+      imageUrl,
+      ingredients,
+      name,
+      soldOut,
+      unitPrice,
+      quantity: 1,
+      totalPrice: unitPrice,
+    };
+
+    dispatch(addItem(newPizzaItem));
+  }
+
   return (
     <li className="flex gap-4 py-2">
       <img src={imageUrl} alt="Pizza Name" className="h-24" />
@@ -14,11 +37,19 @@ function MenuItem({ pizza }) {
         </p>
         <div className="mt-auto flex items-center justify-between">
           <p className="text-sm">{soldOut ? "Sold Out" : `$${unitPrice}`}</p>
-          <Button type="small">Add to cart</Button>
-          <div className="flex items-center justify-center gap-2">
-            <IncDecButtons />
-            <DeleteItemButton />
-          </div>
+
+          {!isInCart && (
+            <Button type="small" onClick={handleAddItem}>
+              Add to cart
+            </Button>
+          )}
+
+          {isInCart && (
+            <div className="flex items-center justify-center gap-2">
+              <IncDecButtons />
+              <DeleteItemButton />
+            </div>
+          )}
         </div>
       </div>
     </li>
