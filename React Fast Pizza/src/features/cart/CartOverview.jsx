@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 function CartOverview() {
   const cartState = useSelector((state) => state.cart);
@@ -17,7 +18,7 @@ function CartOverview() {
         <span>{totalQuantity} pizzas</span>
         <span>${totalPrice}</span>
       </p>
-      <a href="/cart">Open cart &rarr;</a>
+      <Link to="/cart">Open cart &rarr;</Link>
     </div>
   );
 }

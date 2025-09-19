@@ -1,14 +1,16 @@
-import DeleteItemButton from './DeleteItemButton';
-import IncDecButtons from './IncDecButtons';
+import DeleteItemButton from "./DeleteItemButton";
+import IncDecButtons from "./IncDecButtons";
 
-function CartItem() {
+function CartItem({ item }) {
   return (
     <li className="py-3 sm:flex sm:items-center sm:justify-between">
-      <p className="mb-1 sm:mb-0">1× Pizza Name</p>
+      <p className="mb-1 sm:mb-0">
+        {item.quantity}× {item.name}
+      </p>
       <div className="flex items-center justify-between sm:gap-6">
-        <p className="text-sm font-bold">$00.00</p>
-        <IncDecButtons />
-        <DeleteItemButton />
+        <p className="text-sm font-bold">${item.totalPrice}</p>
+        <IncDecButtons id={item.id} />
+        <DeleteItemButton id={item.id} />
       </div>
     </li>
   );

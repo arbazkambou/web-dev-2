@@ -9,7 +9,6 @@ function MenuItem({ pizza }) {
   const cartState = useSelector((store) => store.cart);
 
   const isInCart = cartState.cart.some((item) => item.id === id);
-
   const dispatch = useDispatch();
 
   function handleAddItem() {
@@ -46,8 +45,8 @@ function MenuItem({ pizza }) {
 
           {isInCart && (
             <div className="flex items-center justify-center gap-2">
-              <IncDecButtons />
-              <DeleteItemButton />
+              <IncDecButtons id={id} />
+              <DeleteItemButton id={id} />
             </div>
           )}
         </div>
