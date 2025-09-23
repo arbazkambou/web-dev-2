@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Button from "../../ui/Button";
 import CartItem from "./CartItem";
 import { clearCart } from "../../redux/slices/cartSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import EmptyCart from "./EmptyCart";
 
 function Cart() {
@@ -40,7 +40,9 @@ function Cart() {
       )}
 
       <div className="mt-6 space-x-2">
-        <Button type="primary">Order pizzas</Button>
+        <Button type="primary">
+          <Link to={"/order/new"}>Order pizzas</Link>
+        </Button>
 
         <Button type="secondary" onClick={handleDelAll}>
           Clear cart

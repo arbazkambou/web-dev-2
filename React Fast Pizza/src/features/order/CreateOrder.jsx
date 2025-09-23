@@ -1,11 +1,59 @@
+import { useState } from "react";
 import Button from "../../ui/Button";
+import { useMutation } from "@tanstack/react-query";
+import { createOrder, fetchUserLocation } from "../../services/apiRestaurant";
+import { useSelector } from "react-redux";
 
 function CreateOrder() {
+  const [customer, setCustomer] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [priority, setPriority] = useState(false);
+  const [position, setPosition] = useState("");
+
+  const cart = useSelector((state) => state.cart.cart);
+
+  const { mutate: fetchUserLocationApi, isPending } = useMutation({
+    mutationFn: fetchUserLocation,
+    mutationKey: ["fetch-location"],
+    onSuccess: (data) => {
+      console.log("data", data);
+      setAddress(data.address);
+      setPosition(
+        `latitude ${data.position.latitude}, longitude ${data.position.longitude}`
+      );
+    },
+    onError: (error) => console.log(error.message),
+  });
+
+  const { mutate: createOrderApi, isPending: isOrderCreating } = useMutation({
+    mutationFn: createOrder,
+    mutationKey: ["create-order"],
+    onSuccess: (data) => {
+      console.log("data", data);
+    },
+    onError: (error) => console.log(error.message),
+  });
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    const order = {
+      customer,
+      phone,
+      address,
+      priority,
+      position,
+      cart,
+    };
+
+    createOrderApi(order);
+  }
   return (
     <div className="px-4 py-6">
       <h2 className="mb-8 text-xl font-semibold">Ready to order? Let's go!</h2>
 
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40" htmlFor="customer">
             First Name
@@ -15,6 +63,8 @@ function CreateOrder() {
             className="input grow"
             type="text"
             name="customer"
+            value={customer}
+            onChange={(e) => setCustomer(e.target.value)}
             required
           />
         </div>
@@ -30,6 +80,8 @@ function CreateOrder() {
               type="tel"
               name="phone"
               required
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
             />
           </div>
         </div>
@@ -45,10 +97,16 @@ function CreateOrder() {
               type="text"
               name="address"
               required
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
             />
             <div className="absolute right-2 top-[5px]">
-              <Button type="small" buttonType="button">
-                Get Location
+              <Button
+                type="small"
+                buttonType="button"
+                onClick={fetchUserLocationApi}
+              >
+                {isPending ? "Geting..." : "Get Location"}
               </Button>
             </div>
           </div>
@@ -60,6 +118,8 @@ function CreateOrder() {
             type="checkbox"
             name="priority"
             id="priority"
+            checked={priority}
+            onChange={(e) => setPriority(e.target.checked)}
           />
           <label htmlFor="priority" className="font-medium">
             Want to give your order priority?

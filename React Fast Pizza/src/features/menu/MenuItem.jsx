@@ -13,6 +13,7 @@ function MenuItem({ pizza }) {
 
   function handleAddItem() {
     const newPizzaItem = {
+      pizzaId: id,
       id,
       imageUrl,
       ingredients,
