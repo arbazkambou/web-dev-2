@@ -1,12 +1,10 @@
-import aButton from "./aButton";
-
-function Error() {
+function Error({ message }) {
   return (
     <div>
       <h1>Something went wrong 😢</h1>
-      <p>Error message</p>
+      <p>{message}</p>
 
-      <aButton href="-1">&larr; Go back</aButton>
+      <Button href="-1">&larr; Go back</Button>
     </div>
   );
 }

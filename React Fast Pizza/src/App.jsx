@@ -15,7 +15,7 @@ function App() {
         { index: true, element: <Home /> },
         { path: "/menu", element: <Menu /> },
         { path: "/order/new", element: <CreateOrder /> },
-        { path: "/oder/:orderId", element: <Order /> },
+        { path: "/order/:orderId", element: <Order /> },
         { path: "/cart", element: <Cart /> },
       ],
     },

@@ -3,6 +3,7 @@ import Button from "../../ui/Button";
 import { useMutation } from "@tanstack/react-query";
 import { createOrder, fetchUserLocation } from "../../services/apiRestaurant";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function CreateOrder() {
   const [customer, setCustomer] = useState("");
@@ -10,6 +11,7 @@ function CreateOrder() {
   const [address, setAddress] = useState("");
   const [priority, setPriority] = useState(false);
   const [position, setPosition] = useState("");
+  const navigate = useNavigate();
 
   const cart = useSelector((state) => state.cart.cart);
 
@@ -17,7 +19,6 @@ function CreateOrder() {
     mutationFn: fetchUserLocation,
     mutationKey: ["fetch-location"],
     onSuccess: (data) => {
-      console.log("data", data);
       setAddress(data.address);
       setPosition(
         `latitude ${data.position.latitude}, longitude ${data.position.longitude}`
@@ -31,6 +32,7 @@ function CreateOrder() {
     mutationKey: ["create-order"],
     onSuccess: (data) => {
       console.log("data", data);
+      navigate(`/order/${data.id}`);
     },
     onError: (error) => console.log(error.message),
   });
@@ -127,7 +129,9 @@ function CreateOrder() {
         </div>
 
         <div>
-          <Button type="primary">Create order</Button>
+          <Button type="primary">
+            {isOrderCreating ? "Creating..." : "Create order"}
+          </Button>
         </div>
       </form>
     </div>

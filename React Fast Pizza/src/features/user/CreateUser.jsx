@@ -1,12 +1,10 @@
-import { useDispatch, useSelector } from "react-redux";
-import Button from "../../ui/Button";
 import { useState } from "react";
-import { storeUserName } from "../../redux/slices/userSlice";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { storeUserName } from "../../redux/slices/userSlice";
+import Button from "../../ui/Button";
 
 function CreateUser() {
-  const username = useSelector((state) => state.user);
-  console.log("username", username);
   const dispatch = useDispatch();
   const [name, setName] = useState("");
   const navigate = useNavigate();
