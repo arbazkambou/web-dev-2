@@ -18,7 +18,11 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-export function AddCabinForm() {
+export function AddCabinForm({
+  onOpenChange,
+}: {
+  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof addCabinFormSchema>>({
     resolver: zodResolver(addCabinFormSchema),
@@ -31,8 +35,9 @@ export function AddCabinForm() {
     mutationFn: addCabin,
     mutationKey: ["add-cabin"],
 
-    onSuccess: () => {
-      toast.success("Cabin has been added");
+    onSuccess: (message) => {
+      toast.success(message);
+      onOpenChange(false);
       queryClient.invalidateQueries({ queryKey: ["cabins"] });
     },
 
@@ -48,7 +53,7 @@ export function AddCabinForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
         <FormField
           control={form.control}
           name="name"
@@ -56,7 +61,11 @@ export function AddCabinForm() {
             <FormItem>
               <FormLabel>Cabin Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter name for cabin" {...field} />
+                <Input
+                  placeholder="Enter name for cabin"
+                  {...field}
+                  disabled={isPending}
+                />
               </FormControl>
 
               <FormMessage />
@@ -74,6 +83,7 @@ export function AddCabinForm() {
                   placeholder="Enter cabin capacity"
                   {...field}
                   type="number"
+                  disabled={isPending}
                 />
               </FormControl>
 
@@ -92,6 +102,7 @@ export function AddCabinForm() {
                   placeholder="Enter cabin price"
                   {...field}
                   type="number"
+                  disabled={isPending}
                 />
               </FormControl>
 
@@ -110,6 +121,7 @@ export function AddCabinForm() {
                   placeholder="Enter cabin discount"
                   {...field}
                   type="number"
+                  disabled={isPending}
                 />
               </FormControl>
 
@@ -124,7 +136,11 @@ export function AddCabinForm() {
             <FormItem>
               <FormLabel>Cabin description</FormLabel>
               <FormControl>
-                <Input placeholder="Enter cabin description" {...field} />
+                <Input
+                  placeholder="Enter cabin description"
+                  {...field}
+                  disabled={isPending}
+                />
               </FormControl>
 
               <FormMessage />
@@ -134,18 +150,27 @@ export function AddCabinForm() {
         <FormField
           control={form.control}
           name="image"
-          render={({ field }) => (
+          render={({ field: { onChange, ref } }) => (
             <FormItem>
               <FormLabel>Cabin image</FormLabel>
               <FormControl>
-                <Input placeholder="" {...field} />
+                <Input
+                  placeholder=""
+                  type="file"
+                  accept="image/*"
+                  ref={ref}
+                  onChange={(e) => onChange(e.target.files?.[0])}
+                  disabled={isPending}
+                />
               </FormControl>
 
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={isPending}>
+          {isPending ? "Uploading..." : "Submit"}
+        </Button>
       </form>
     </Form>
   );

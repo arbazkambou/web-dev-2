@@ -17,7 +17,7 @@ export const addCabinFormSchema = z
     regularPrice: z.transform(Number).pipe(z.number().min(10).max(10000)),
     discount: z.transform(Number).pipe(z.number()),
     description: z.string().min(5).max(20),
-    image: z.string(),
+    image: z.instanceof(File, { message: "Please select an image" }),
   })
   .refine((data) => data.discount < data.regularPrice, {
     message: "Discount should be less than regular price",
