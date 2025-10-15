@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "13.0.5";
+    PostgrestVersion: "13.0.4";
   };
   public: {
     Tables: {
@@ -35,12 +35,12 @@ export type Database = {
         Insert: {
           cabinId: number;
           cabinPrice: number;
-          created_at: string;
+          created_at?: string;
           endDate: string;
           extrasPrice: number;
           guestId: number;
           hasBreakfast: boolean;
-          id: number;
+          id?: number;
           isPaid: boolean;
           numGuests: number;
           numNights: number;
@@ -66,7 +66,22 @@ export type Database = {
           status?: string;
           totalPrice?: number;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "bookings_cabinId_fkey";
+            columns: ["cabinId"];
+            isOneToOne: false;
+            referencedRelation: "cabins";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "bookings_guestId_fkey";
+            columns: ["guestId"];
+            isOneToOne: false;
+            referencedRelation: "guests";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       cabins: {
         Row: {
@@ -83,7 +98,7 @@ export type Database = {
           created_at?: string;
           description: string;
           discount: number;
-          id?: never;
+          id?: number;
           image: string;
           maxCapacity: number;
           name: string;
@@ -93,38 +108,11 @@ export type Database = {
           created_at?: string;
           description?: string;
           discount?: number;
-          id?: never;
+          id?: number;
           image?: string;
           maxCapacity?: number;
           name?: string;
           regularPrice?: number;
-        };
-        Relationships: [];
-      };
-      contact: {
-        Row: {
-          created_at: string;
-          email: string;
-          fullName: string;
-          id: number;
-          message: string;
-          subject: string;
-        };
-        Insert: {
-          created_at: string;
-          email: string;
-          fullName: string;
-          id: number;
-          message: string;
-          subject: string;
-        };
-        Update: {
-          created_at?: string;
-          email?: string;
-          fullName?: string;
-          id?: number;
-          message?: string;
-          subject?: string;
         };
         Relationships: [];
       };
@@ -140,10 +128,10 @@ export type Database = {
         };
         Insert: {
           countryFlag: string;
-          created_at: string;
+          created_at?: string;
           email: string;
           fullName: string;
-          id: number;
+          id?: number;
           nationalID: string;
           nationality: string;
         };
@@ -169,8 +157,8 @@ export type Database = {
         };
         Insert: {
           breakfastPrice: number;
-          created_at: string;
-          id: number;
+          created_at?: string;
+          id?: number;
           maxBookingLength: number;
           maxGuestsPerBooking: number;
           minBookingLength: number;

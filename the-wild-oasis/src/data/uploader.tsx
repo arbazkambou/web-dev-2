@@ -2,10 +2,11 @@ import { isFuture, isPast, isToday } from "date-fns";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { guests } from "./data-guests";
-import { Button } from "@/components/ui/button";
-import { subtractDates } from "@/utils/helpers";
+
 import { cabins } from "./data-cabins";
 import { bookings } from "./data-bookings";
+import { subtractDates } from "@/helpers/helpers";
+import { Button } from "@/components/ui/button";
 
 // const originalSettings = {
 //   minBookingLength: 3,
@@ -105,8 +106,8 @@ async function createBookings() {
         cabinPrice,
         extrasPrice,
         totalPrice,
-        guestId: allGuestIds.at(booking.guestId - 1) || 1,
-        cabinId: allCabinIds.at(booking.cabinId - 1) || 1,
+        guestId: allGuestIds.at(booking.guestId - 1) || 2,
+        cabinId: allCabinIds.at(booking.cabinId - 1) || 2,
         status: status || "unconfirmed",
       };
     })

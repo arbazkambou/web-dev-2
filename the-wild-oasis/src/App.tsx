@@ -5,6 +5,7 @@ import Cabins from "./components/pages/Cabins";
 import Homepage from "./components/pages/Homepage";
 import Settings from "./components/pages/Settings";
 import Users from "./components/pages/Users";
+import { Uploader } from "./data/uploader";
 
 function App() {
   const router = createBrowserRouter([
@@ -31,6 +32,10 @@ function App() {
         {
           path: "/settings",
           element: <Settings />,
+        },
+        {
+          path: "/upload",
+          element: <Uploader />,
         },
       ],
     },
