@@ -11,6 +11,8 @@ function Bookings() {
 
   const sortOption = searchParams.get("sortBy") || "startDate-asc";
 
+  const page = Number(searchParams.get("page")) || 1;
+
   const [field, value] = sortOption.split("-");
 
   const sortBy = {
@@ -23,13 +25,9 @@ function Bookings() {
     value: filterValue,
   };
 
-  const {
-    data: bookings,
-    isLoading,
-    isSuccess,
-  } = useQuery({
-    queryKey: ["bookings", filter, sortBy],
-    queryFn: () => getBookings({ filter, sortBy }),
+  const { data, isLoading, isSuccess } = useQuery({
+    queryKey: ["bookings", filter, sortBy, page],
+    queryFn: () => getBookings({ filter, sortBy, page }),
   });
 
   if (isLoading)
@@ -40,7 +38,12 @@ function Bookings() {
     );
 
   if (isSuccess) {
-    return <BookingsTable bookings={bookings} />;
+    return (
+      <BookingsTable
+        bookings={data.data.bookings}
+        pagination={data.pagination}
+      />
+    );
   }
 }
 

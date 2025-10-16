@@ -1,8 +1,10 @@
+import MyPagination, { Pagination } from "@/components/layout/MyPagination";
 import {
   Card,
   CardAction,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -26,7 +28,13 @@ import { Booking } from "@/types/bookings.types";
 
 import { useSearchParams } from "react-router-dom";
 
-function BookingsTable({ bookings }: { bookings: Booking[] }) {
+function BookingsTable({
+  bookings,
+  pagination,
+}: {
+  bookings: Booking[];
+  pagination: Pagination;
+}) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const filterOption = searchParams.get("status") || "all";
@@ -148,6 +156,9 @@ function BookingsTable({ bookings }: { bookings: Booking[] }) {
             </TableBody>
           </Table>
         </CardContent>
+        <CardFooter>
+          <MyPagination pagination={pagination} />
+        </CardFooter>
       </Card>
     </div>
   );
