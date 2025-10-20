@@ -20,8 +20,7 @@ export type Pagination = {
 
 function MyPagination({ pagination }: { pagination: Pagination }) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { hasNextPage, hasPreviousPage, limit, page, total, totalPages } =
-    pagination;
+  const { hasNextPage, hasPreviousPage, limit, page, total } = pagination;
 
   function handlePageChange(page: number) {
     searchParams.set("page", String(page));
