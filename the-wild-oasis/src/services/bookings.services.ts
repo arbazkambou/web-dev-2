@@ -1,3 +1,4 @@
+import { getToday } from "@/helpers/helpers";
 import { supabase } from "@/lib/supabase";
 
 type Filter = { field: string; value: string };
@@ -59,4 +60,34 @@ export async function getBookings({
       limit,
     },
   };
+}
+
+export async function getBookingsAfterDate(date: string) {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("created_at, totalPrice, extrasPrice")
+    .gte("created_at", date)
+    .lte("created_at", getToday({ end: true }));
+
+  if (error) {
+    console.error(error);
+    throw new Error("Bookings could not get loaded");
+  }
+
+  return data;
+}
+
+export async function getStaysAfterDate(date: string) {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*, guests(fullName)")
+    .gte("startDate", date)
+    .lte("startDate", getToday());
+
+  if (error) {
+    console.error(error);
+    throw new Error("Bookings could not get loaded");
+  }
+
+  return data;
 }
