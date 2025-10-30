@@ -10,6 +10,7 @@ import Stats from "../features/stats/Stats";
 import Spinner from "../layout/Spinner";
 import { getAllCabins } from "@/services/cabins.services";
 import { SalesChart } from "../features/stats/SalesChart";
+import { DurationChart } from "../features/stats/DurationChart";
 
 function Homepage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -103,6 +104,9 @@ function Homepage() {
             numOfCabins={cabins.length}
             numOfDays={Number(filterBy)}
           />
+          <div className="grid lg:grid-cols-2 gap-6">
+            <DurationChart recentStays={recentStays} />
+          </div>
           <div>
             <SalesChart
               numOfDays={Number(filterBy)}
